@@ -1,0 +1,439 @@
+/* 全体に共通する設定 */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    isolation: isolate;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 48px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #00183b;
+    background-image: url("../img/svg/background.svg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #00b52a;
+    font-family: "Bytesized", sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.25;
+    text-shadow: 0 0 5px rgba(0, 255, 247, 0.25);
+}
+
+/* スマホでは通常の背景を使う */
+.background_layer {
+    display: none;
+}
+
+/* PCでは、背景専用のレイヤーを動かして奥行きを出す */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .background_layer {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .background_layer::before {
+        content: "";
+        position: absolute;
+        /* 動いても画像の端が見えないよう、少し大きくしておく */
+        inset: -32px;
+        background: #00183b url("../img/svg/background.svg") center / cover no-repeat;
+        transform: translate(var(--background-x, 0px), var(--background-y, 0px));
+        transition: transform 200ms ease-out;
+    }
+}
+
+h2 {
+    font-size: 40px;
+    font-weight: 400;
+    text-align: center;
+}
+
+/* 茶色いゲーム機。ここにある数値を変えると各部の大きさを調整できる */
+.inner_body {
+    --screen-padding: 30px;
+    --screen-radius: 50px;
+    --button-size: 116px;
+    --button-border: 6px;
+    --button-inner-border: 4px;
+    --notch-radius: 68px;
+    --notch-offset: 50px;
+    --screen-tail-gap: -8px;
+    --choice-first-x: calc(16.666667% + var(--screen-padding) * 2 / 3);
+    --choice-last-x: calc(83.333333% - var(--screen-padding) * 2 / 3);
+
+    width: 746px;
+    max-width: 100%;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    border-radius: 58px 58px 80px 80px;
+    background: linear-gradient(180deg, #a15800 62.98%, #502c00 100%);
+    box-shadow:
+        0 0 50px rgba(0, 0, 0, 0.5),
+        inset 0 5px 20px rgba(255, 255, 255, 0.25);
+}
+
+/* 画面の中身を載せる枠。背景は ::before に分け、ボタンを外に出せるようにする */
+.screen {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    padding: var(--screen-padding) var(--screen-padding) 0;
+}
+
+/* 黒い背景だけに、3つの円形の切り欠きを作る */
+.screen::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 calc(var(--button-size) + var(--screen-tail-gap));
+    border-radius: var(--screen-radius);
+    background: #2a3432;
+    box-shadow:
+        0 0 10px rgba(0, 0, 0, 0.55),
+        inset 0 0 60px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+
+    /* 各列の中央に円を置き、その部分だけ背景を透明にする */
+    --cutouts:
+        radial-gradient(circle var(--notch-radius) at var(--choice-first-x) calc(100% + var(--notch-offset)), transparent calc(100% - 1px), #000 100%),
+        radial-gradient(circle var(--notch-radius) at 50% calc(100% + var(--notch-offset)), transparent calc(100% - 1px), #000 100%),
+        radial-gradient(circle var(--notch-radius) at var(--choice-last-x) calc(100% + var(--notch-offset)), transparent calc(100% - 1px), #000 100%);
+    -webkit-mask-image: var(--cutouts);
+    mask-image: var(--cutouts);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+}
+
+/* 対戦回数と勝敗カウンター */
+.count {
+    width: 100%;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid rgba(0, 181, 42, 0.65);
+}
+
+.count p {
+    white-space: nowrap;
+}
+
+.counters {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* コンピューターの手。3つとも不透明度0.2で同じ位置に重ねる */
+.computer_choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.choices_computer {
+    width: 100%;
+    height: 160px;
+    display: grid;
+    place-items: center;
+}
+
+.choices_computer img {
+    grid-area: 1 / 1;
+    display: block;
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+    opacity: 0.2;
+}
+
+.choices_computer {
+    position: relative;
+}
+
+#result {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    white-space: nowrap;
+
+    color: #eaff00;
+    font-size: 60px;
+    text-align: center;
+}
+
+/* プレイヤーの選択。アイコン・矢印・ボタンを手ごとに縦に並べる */
+.player_choice {
+    margin-top: 30px;
+}
+
+.player_choice h2 {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.player_choice h2::before,
+.player_choice h2::after {
+    content: "";
+    flex: 1;
+    min-width: 0;
+    border-top: 2px dotted rgba(0, 181, 42, 0.65);
+}
+
+.choices_player {
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.choices_player > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.choices_player img {
+    display: block;
+    width: 107px;
+    max-width: 100%;
+    height: 110px;
+    object-fit: contain;
+    opacity: 0.2;
+}
+
+/* 上向きの矢印。飾りなのでクリックの対象にしない */
+.arrow {
+    width: 100%;
+    height: 14px;
+    margin-top: 25px;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+.arrow::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid currentColor;
+    border-left: 2px solid currentColor;
+    transform: rotate(45deg);
+}
+
+/* クリックできるのは、この丸いボタンだけ */
+.choice_btn {
+    width: var(--button-size);
+    height: var(--button-size);
+    flex: none;
+    margin-top: 20px;
+    padding: 0;
+    position: relative;
+    border: var(--button-border) solid transparent;
+    border-radius: 50%;
+    background:
+        linear-gradient(var(--button-edge), var(--button-edge)) padding-box,
+        linear-gradient(180deg, #b0b3b0, #777d79 50%, #aeb0ac) border-box;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 銀色の枠は button 本体、内側の色付きの面は ::before で作る */
+.choice_btn::before {
+    content: "";
+    position: absolute;
+    inset: var(--button-inner-border);
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--button-light), var(--button-color));
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+}
+
+#button_rock {
+    --button-light: #bd4141;
+    --button-color: #bc0000;
+    --button-edge: #850000;
+}
+
+#button_scissors {
+    --button-light: #e5e15c;
+    --button-color: #d9d300;
+    --button-edge: #989400;
+}
+
+#button_paper {
+    --button-light: #55dc86;
+    --button-color: #00d348;
+    --button-edge: #009a32;
+}
+
+.choice_btn:focus-visible {
+    outline: 3px solid #baffbd;
+    outline-offset: 5px;
+}
+
+.choice_btn:active::before {
+    box-shadow:
+        inset 0 5px 8px rgba(0, 0, 0, 0.35),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.1);
+    transform: translateY(2px) scale(0.96);
+    filter: brightness(0.92);
+}
+
+/* キーボード操作中も、対応する手を分かりやすくする */
+.choices_player > div:has(.choice_btn:focus-visible) img {
+    opacity: 1;
+}
+
+.rock:hover img, .scissors:hover img, .paper:hover img {
+    opacity: 1;
+}
+
+@media (hover: hover) {
+    .choice_btn:hover:not(:active)::before {
+        filter: brightness(1.1);
+    }
+
+    .choices_player > div:has(.choice_btn:hover) img {
+        opacity: 1;
+    }
+}
+
+/* ロゴ。SVGの縦横比を保ったまま表示する */
+.game_icon {
+    display: block;
+    width: 256px;
+    max-width: 100%;
+    height: auto;
+    margin-top: 16px;
+    margin-bottom: 30px;
+    opacity: 0.65;
+    filter: drop-shadow(0 4px 2px rgba(255, 191, 57, 0.32));
+}
+
+/* スマホと、幅の狭いウィンドウ */
+@media (max-width: 640px) {
+    body {
+        padding: 24px 16px;
+        font-size: 18px;
+        line-height: 22px;
+    }
+
+    h2 {
+        font-size: 24px;
+        line-height: 30px;
+    }
+
+    .inner_body {
+        --screen-padding: 14px;
+        --screen-radius: 24px;
+        --button-size: 56px;
+        --button-border: 3px;
+        --button-inner-border: 2px;
+        --notch-radius: 33px;
+        --notch-offset: 24px;
+        --screen-tail-gap: 6px;
+        padding: 8px;
+        gap: 12px;
+        border-radius: 28px 28px 38px 38px;
+        box-shadow:
+            0 0 24px rgba(0, 0, 0, 0.5),
+            inset 0 2px 10px rgba(255, 255, 255, 0.25);
+    }
+
+    .count {
+        font-size: clamp(16px, 4.6vw, 18px);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .counters {
+        width: 100%;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .computer_choice {
+        gap: 12px;
+    }
+
+    .choices_computer,
+    .choices_computer img {
+        width: 96px;
+        height: 96px;
+    }
+
+    .player_choice {
+        margin-top: 36px;
+    }
+
+    .player_choice h2 {
+        gap: 8px;
+        line-height: 28px;
+    }
+
+    .player_choice h2::before,
+    .player_choice h2::after {
+        border-top-width: 1px;
+    }
+
+    .choices_player {
+        margin-top: 12px;
+    }
+
+    .choices_player img {
+        width: 52px;
+        height: 53px;
+    }
+
+    .arrow {
+        height: 7px;
+        margin-top: 12px;
+    }
+
+    .arrow::before {
+        width: 5px;
+        height: 5px;
+        border-width: 1px;
+    }
+
+    .choice_btn:focus-visible {
+        outline-width: 2px;
+        outline-offset: 4px;
+    }
+
+    .game_icon {
+        width: 123px;
+        margin-top: 8px;
+        margin-bottom: 14px;
+    }
+}

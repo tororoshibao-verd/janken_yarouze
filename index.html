@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bytesized&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>ジャンケンやろうぜ！</title>
+</head>
+<body>
+    <!-- PCでカーソルに合わせて動く背景 -->
+    <div class="background_layer" aria-hidden="true"></div>
+    <div class="inner_body">
+        <div class="screen">
+            <!-- ゲームカウンター -->
+            <div class="count">
+                <p class="game_count">Game Count : <span id="game_count">00</span></p>
+                <div class="counters">
+                    <p class="win_count">WIN : <span id="win_count">00</span></p>
+                    <p class="draw_count">DRAW : <span id="draw_count">00</span></p>
+                    <p class="lose_count">LOSE : <span id="lose_count">00</span></p>
+                </div>
+            </div>
+
+            <!-- コンピュータの選択 -->
+            <section class="computer_choice">
+                <h2>Computer's Choice</h2>
+                <div class="choices_computer">
+                    <img class="icon_rock-computer" id="icon_rock-computer" src="./img/svg/rps-rock.svg" alt="rock">
+                    <img class="icon_paper-computer" id="icon_paper-computer" src="./img/svg/rps-paper.svg" alt="paper">
+                    <img class="icon_scissors-computer" id="icon_scissors-computer" src="./img/svg/rps-scissors.svg" alt="scissors">
+                    <p id="result" aria-live="polite"></p>
+                </div>
+            </section>
+
+            <!-- プレイヤーの選択 -->
+            <section class="player_choice">
+                <h2>Your Choice</h2>
+                <div class="choices_player">
+                    <div class="rock">
+                        <img class="icon_rock-player" src="./img/svg/rps-rock.svg" alt="rock">
+                        <span class="arrow"></span>
+                        <button type="button" class="choice_btn" id="button_rock" aria-label="グーを選ぶ"></button>
+                    </div>
+                    <div class="scissors">
+                        <img class="icon_scissors-player" src="./img/svg/rps-scissors.svg" alt="scissors">
+                        <span class="arrow"></span>
+                        <button type="button" class="choice_btn" id="button_scissors" aria-label="チョキを選ぶ"></button>
+                    </div>
+                    <div class="paper">
+                        <img class="icon_paper-player" src="./img/svg/rps-paper.svg" alt="paper">
+                        <span class="arrow"></span>
+                        <button type="button" class="choice_btn" id="button_paper" aria-label="パーを選ぶ"></button>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- ゲームアイコン -->
+        <img class="game_icon" src="./img/svg/logo.svg" alt="rock-paper-scissors">
+    </div>
+    <!-- jQueryを先に読み込み、そのあとに自分のJavaScriptを読み込む -->
+    <script src="./JavaScript/vendor/jquery-3.7.1.min.js"></script>
+    <script src="./JavaScript/script2.js"></script>
+    <script src="./JavaScript/background.js"></script>
+</body>
+</html>
